@@ -34,7 +34,7 @@
 				<span class="label">Model of Car</span>
 				<select :disabled="models.length == 0" v-model="selectedModel" >
 					<option value="">Select Model of Car</option>
-					<option v-for="model in models" :value="models">{{model}}</option>
+					<option v-for="model in models" :value="model">{{model}}</option>
 				</select>
 			</div>
 
@@ -45,6 +45,12 @@
 
 		<div v-else>
 			<h1>Submitted with great success - you rock!</h1>
+			<ul id="submitted-choices">
+				<li>{{name}}</li>
+				<li>{{email}}</li>
+				<li>{{selectedMake}}</li>
+				<li>{{selectedModel}}</li>
+			</ul>
 		</div>
 	</div>
 
@@ -86,10 +92,10 @@
 					if(this.selectedMake.length > 0) {
 						console.log(this.selectedMake, "selectedMake");
 						this.models = this.makesAndModels[this.selectedMake];
-						console.log(this.models, "this.models")
+						console.log(this.models, "this.models");
 					}
 				}
-			},
+			 },
 			methods: {
 				onSubmit() {
 
@@ -107,10 +113,18 @@
 						this.errors += ' email is required ';
 					}
 
+					if(!this.selectedMake) {
+						this.errors += ' please select a make of car '
+					}
+
+					if(!this.selectedModel) {
+						this.errors += ' you must also select a model '
+					}
+
 					if (!this.errors) {
 						this.submitted = true;
 						this.name = this.firstName + ' ' + this.lastName;
-						
+
 					}
 				}
 			}
