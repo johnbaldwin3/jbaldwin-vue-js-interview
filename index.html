@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1.0">
+	<link rel="stylesheet" href="https://unpkg.com/milligram@1.3.0/dist/milligram.css"></link>
+</head>
+
+<body>
+	<div id="app">
+		<form @submit.prevent="onSubmit" v-if="!submitted">
+			<div class="errors" v-if="errors">
+				{{errors}}
+			</div>
+
+			<label>first name:</label>
+			<input v-model="firstName" type="text" />
+
+			<label>last name:</label>
+			<input v-model="lastName" type="text" />
+
+			<label>email:</label>
+			<input v-model="email" type="email" />
+
+			<div class="dropdownCascade">
+				<span class="label">Make of Car</span>
+				<select v-model="selectedMake">
+					<option value="">Select Make of Car</option>
+					<option v-for="(make_obj, makes) in makesAndModels" :value="makes">{{makes}}</option>
+				</select>
+			</div>
+			<div class="dropdownCascade">
+				<span class="label">Model of Car</span>
+				<select :disabled="models.length == 0" v-model="selectedModel" >
+					<option value="">Select Model of Car</option>
+					<option v-for="model in models" :value="models">{{model}}</option>
+				</select>
+			</div>
+
+
+			<br />
+			<button type="submit">Submit</button>
+		</form>
+
+		<div v-else>
+			<h1>Submitted with great success - you rock!</h1>
+		</div>
+	</div>
+
+	<script src="https://unpkg.com/vue"></script>
+	<script>
+	var makesAndModels = {
+		'BMW': ['m3', 'z3', 'x5'],
+		'Toyota': ['camry', 'ft-86', 'prius'],
+		'Subaru': ['brz', 'outback', 'legacy']
+	};
+	//gleaned some information from https://jsfiddle.net/mani04/Lgxrcc5p/ to better understand how Vue works with dropdowns
+
+	//also referenced current Udemy course: https://www.udemy.com/vuejs-2-academy-learn-vue-vuex-step-by-step/learn/v4/t/lecture/7417186?start=0 for better understanding of Vue.js
+
+		var app = new Vue({
+			el: '#app',
+			data() {
+				return {
+					submitted: false,
+					errors: '',
+					name: '',
+					firstName: '',
+					lastName: '',
+					name: '',
+					email: '',
+					makesAndModels: makesAndModels,
+					makes: [],
+					models: [],
+					selectedMake: '',
+					selectedModel: '',
+				};
+			},
+			watch: {
+				selectedMake: function() {
+					//clear the "state" of these data properties
+					this.models = [];
+					this.selectedModel = "";
+					//populate models list based on make choice
+					if(this.selectedMake.length > 0) {
+						console.log(this.selectedMake, "selectedMake");
+						this.models = this.makesAndModels[this.selectedMake];
+						console.log(this.models, "this.models")
+					}
+				}
+			},
+			methods: {
+				onSubmit() {
+
+					this.errors = '';
+
+					if (!this.firstName) {
+						this.errors += ' first name is required ';
+					}
+
+					if (!this.lastName) {
+						this.errors += ' last name is required ';
+					}
+
+					if(!this.email) {
+						this.errors += ' email is required ';
+					}
+
+					if (!this.errors) {
+						this.submitted = true;
+						this.name = this.firstName + ' ' + this.lastName;
+						
+					}
+				}
+			}
+		});
+
+	</script>
+</body>
+
+</html>
